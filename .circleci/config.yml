@@ -189,37 +189,9 @@ workflows:
                 only:
                   - main
 
-    snapshot-all:
-      jobs:
-        - dependencies:
-            filters:
-              tags:
-                only:
-                  - /^v.*/
-              branches:
-                ignore: /.*/
-        - snapshot:
-            matrix:
-              parameters:
-                language: ["de-DE", "en-EN", "bg-BG", "ro-RO", "pl-PL", "tr-TR"]
-            requires:
-              - dependencies
-        - collect-snapshots:
-            requires:
-              - snapshot
-
     beta-release:
       jobs:
         - dependencies:
-            filters:
-              tags:
-                only:
-                  - /^v.*/
-              branches:
-                ignore: /.*/
-        - test:
-            requires:
-              - dependencies
             filters:
               tags:
                 only:
