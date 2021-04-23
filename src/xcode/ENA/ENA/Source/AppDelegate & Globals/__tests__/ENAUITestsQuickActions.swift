@@ -133,14 +133,20 @@ class ENAUITestsQuickActions: XCTestCase {
 		tanButton.tap()
 
 		// Fill in dummy TAN.
-		XCTAssertTrue(app.buttons["AppStrings.ExposureSubmission.primaryButton"].waitForExistence(timeout: .medium))
+		
+		let submitButton = try XCTUnwrap(app.buttons["AppStrings.ExposureSubmission.primaryButton"])
+		
+		let keyboard = app.keyboards.firstMatch
+		XCTAssertTrue(keyboard.waitForExistence(timeout: .medium))
+		
 		"qwdzxcsrhe".forEach {
-			app.keyboards.keys[String($0)].tap()
+			keyboard.keys[String($0)].tap()
 		}
 		try checkAppMenu(expectNewDiaryItem: true, expectEventCheckin: true)
 		// Submit TAN
-		XCTAssertTrue(app.buttons["AppStrings.ExposureSubmission.primaryButton"].isEnabled)
-		app.buttons["AppStrings.ExposureSubmission.primaryButton"].tap()
+		
+		XCTAssertTrue(submitButton.isEnabled)
+		submitButton.tap()
 		// remember: TAN tests are ALWAYS positive!
 
 		// Result Screen
