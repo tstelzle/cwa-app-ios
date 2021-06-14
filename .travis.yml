@@ -10,11 +10,12 @@ addons:
 
 before_install:
   - set -e
+install:
+  - bundle install --path=vendor --jobs=8
+before_script:
   - bundle --version
   - fastlane --version
   - swiftlint version
-install:
-  - bundle install --path=vendor --jobs=8
 script:
   - fastlane lint
   - fastlane test
