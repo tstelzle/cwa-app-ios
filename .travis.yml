@@ -9,7 +9,7 @@ addons:
     brewfile: true
 
 before_install:
-  - set -euo pipefail
+  - set -e
   - bundle --version
   - fastlane --version
   - swiftlint version
