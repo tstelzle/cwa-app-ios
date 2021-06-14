@@ -2,6 +2,12 @@ os: osx
 language: swift
 osx_image: xcode12.4
 
+cache: bundler
+
+addons:
+  homebrew:
+    brewfile: true
+
 before_install:
   - cd src/xcode
 install:
