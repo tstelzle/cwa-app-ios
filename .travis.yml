@@ -6,4 +6,4 @@ xcode_scheme: ENA
 xcode_sdk: iphonesimulator14.4
 
 before_install:
-  - bundle install --path=src/xcode/vendor --jobs=8
+  - cd src/xcode && bundle install --path=vendor --jobs=8
