@@ -1,9 +1,10 @@
+os: osx
 language: swift
 osx_image: xcode12.4
 
-xcode_workspace: ENA.xcworkspace
-xcode_scheme: ENA
-xcode_sdk: iphonesimulator14.4
-
 before_install:
-  - cd src/xcode && bundle install --path=vendor --jobs=8
+  - cd src/xcode
+install:
+  - bundle install --path=vendor --jobs=8
+script:
+  - fastlane test

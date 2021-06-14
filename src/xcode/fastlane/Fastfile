@@ -26,6 +26,7 @@ platform :ios do
 
   before_all do
     setup_circle_ci
+    setup_travis
 
     if is_ci
       xcversion(version: "~> 12.4.0")
