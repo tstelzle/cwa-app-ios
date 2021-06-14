@@ -1,0 +1,6 @@
+language: swift
+osx_image: xcode12.5
+
+xcode_workspace: ENA.xcworkspace
+xcode_scheme: ENA
+xcode_sdk: iphonesimulator14.5
