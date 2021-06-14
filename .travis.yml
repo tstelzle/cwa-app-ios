@@ -9,8 +9,12 @@ addons:
     brewfile: true
 
 before_install:
-  - cd src/xcode
+  - set -euo pipefail
+  - bundle --version
+  - fastlane --version
+  - swiftlint version
 install:
   - bundle install --path=vendor --jobs=8
 script:
+  - fastlane lint
   - fastlane test
