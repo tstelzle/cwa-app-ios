@@ -1,8 +1,10 @@
 language: swift
 osx_image: xcode12.5
-# align this with our local `.ruby-version`
-ruby: 2.7.2
 
 xcode_workspace: ENA.xcworkspace
 xcode_scheme: ENA
 xcode_sdk: iphonesimulator14.5
+
+before_install:
+  - rvm install ruby-2.7.2
+  # - bundle install --path=src/xcode/vendor --jobs=8
