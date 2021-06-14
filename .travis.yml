@@ -12,7 +12,7 @@ before_install:
   - set -e
   - cd src/xcode
 install:
-  - bundle install
+  - bundle install --verbose --jobs=8
 before_script:
   - bundle --version
   - fastlane --version
