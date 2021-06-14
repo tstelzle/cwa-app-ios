@@ -48,12 +48,13 @@ docs/swift-doc
 xcbuild_test.sh
 
 # fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots/**/*.png
-fastlane/test_output
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots/**/*.png
+**/fastlane/test_output
 swiftlint.result.json
-screenshots
+
+**/screenshots
 
 vendor
 

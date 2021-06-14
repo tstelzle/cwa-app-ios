@@ -10,6 +10,7 @@ addons:
 
 before_install:
   - set -e
+  - cd src/xcode
 install:
   - bundle install
 before_script:
