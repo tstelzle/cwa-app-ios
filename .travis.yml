@@ -1,5 +1,7 @@
 language: swift
 osx_image: xcode12.5
+# align this with our local `.ruby-version`
+ruby: 2.7.2
 
 xcode_workspace: ENA.xcworkspace
 xcode_scheme: ENA
