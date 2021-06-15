@@ -13,13 +13,21 @@ before_install:
   - ls -la
 install:
   - cd src/xcode
-  - bundle install --verbose --jobs=8
+  - bundle install --jobs=8
 before_script:
   - bundle --version
-  - bundle list
-  - bundle info fastlane
   - fastlane --version
   - swiftlint version
-script:
-  - fastlane lint
-  - fastlane test
+
+jobs:
+  include:
+    - stage: "Tests"
+      name: "Unit Tests"
+      script: bundle exec fastlane test testplan:UnitTests
+
+    - script: bundle exec fastlane test testplan:UITests
+      name: "UI Tests"
+      
+    - stage: lint
+      script:
+        - fastlane lint
