@@ -115,6 +115,7 @@ enum HealthCertificateServiceError {
 		case rsaKeyPairGenerationFailed(DCCRSAKeyPairError)
 		case decryptionFailed(Error)
 		case assemblyFailed(CertificateDecodingError)
+		case dgcNotSupportedByLab
 		case other(Error)
 
 		var errorDescription: String? {
@@ -216,6 +217,8 @@ enum HealthCertificateServiceError {
 				}
 			case .other(let error):
 				return String(format: AppStrings.HealthCertificate.Overview.TestCertificateRequest.Error.tryAgain, error.localizedDescription)
+			case .dgcNotSupportedByLab:
+				return String(format: AppStrings.HealthCertificate.Overview.TestCertificateRequest.Error.dgcNotSupportedByLab, "DGC_NOT_SUPPORTED_BY_LAB")
 			}
 		}
 	}
