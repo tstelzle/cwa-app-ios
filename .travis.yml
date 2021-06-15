@@ -26,7 +26,5 @@ jobs:
       name: "Unit Tests"
     - script: bundle exec fastlane test testplan:UITests
       name: "UI Tests"
-
-    - stage: lint
-      script:
-        - fastlane lint
+    - script: bundle exec fastlane lint
+      name: "Lint"
