@@ -12,7 +12,8 @@ before_install:
   - pwd
   - ls -la
 install:
-  - bundle install --verbose --jobs=8
+  - cd src/xcode
+  - bundle install --verbose --jobs=8 --gemfile=src/xcode/Gemfile
 before_script:
   - bundle --version
   - bundle list
