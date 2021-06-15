@@ -9,9 +9,9 @@ addons:
     brewfile: true
 
 before_install:
-  - set -e
+  - pwd
+  - ls -la
 install:
-  - cd src/xcode
   - bundle install --verbose --jobs=8
 before_script:
   - bundle --version
