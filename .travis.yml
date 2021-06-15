@@ -2,15 +2,15 @@ os: osx
 language: swift
 osx_image: xcode12.4
 
-cache: bundler
+cache:
+  bundler: true
+  directories:
+   - /home/travis/.rvm/
 
 addons:
   homebrew:
     brewfile: true
 
-before_install:
-  - pwd
-  - ls -la
 install:
   - cd src/xcode
   - bundle install --jobs=8
@@ -28,3 +28,6 @@ jobs:
       name: "UI Tests"
     - script: bundle exec fastlane lint
       name: "Lint"
+
+notifications:
+  email: false
