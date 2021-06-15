@@ -120,7 +120,7 @@ jobs:
       - run:
           name: Run Fastlane tests
           command: cd src/xcode && bundle exec fastlane test testplan:<<parameters.testplan>>
-          no_output_timeout: 5m
+          no_output_timeout: 25m
       - restore_cache:
           key: sonar-cloud-v2
       - run:
@@ -169,7 +169,7 @@ jobs:
       - run:
           name: Run Fastlane smoke tests
           command: cd src/xcode && bundle exec fastlane test_community
-          no_output_timeout: 10m
+          no_output_timeout: 25m
       - store_test_results:
           path: src/xcode/fastlane/test_output/
       - store_artifacts:

@@ -22,12 +22,11 @@ before_script:
 jobs:
   include:
     - stage: "Tests"
-      name: "Unit Tests"
       script: bundle exec fastlane test testplan:UnitTests
-
+      name: "Unit Tests"
     - script: bundle exec fastlane test testplan:UITests
       name: "UI Tests"
-      
+
     - stage: lint
       script:
         - fastlane lint
