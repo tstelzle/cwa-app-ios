@@ -10,11 +10,13 @@ addons:
 
 before_install:
   - set -e
-  - cd src/xcode
 install:
+  - cd src/xcode
   - bundle install --verbose --jobs=8
 before_script:
   - bundle --version
+  - bundle list
+  - bundle info fastlane
   - fastlane --version
   - swiftlint version
 script:
