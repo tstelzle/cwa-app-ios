@@ -180,6 +180,7 @@ class HealthCertificateService {
 		coronaTestType: CoronaTestType,
 		registrationToken: String,
 		registrationDate: Date,
+		labId: String?,
 		retryExecutionIfCertificateIsPending: Bool
 	) {
 		Log.info("[HealthCertificateService] Registering test certificate request: (coronaTestType: \(coronaTestType), registrationToken: \(private: registrationToken), registrationDate: \(registrationDate), retryExecutionIfCertificateIsPending: \(retryExecutionIfCertificateIsPending)", log: .api)
@@ -187,7 +188,8 @@ class HealthCertificateService {
 		let testCertificateRequest = TestCertificateRequest(
 			coronaTestType: coronaTestType,
 			registrationToken: registrationToken,
-			registrationDate: registrationDate
+			registrationDate: registrationDate,
+			labId: labId
 		)
 
 		testCertificateRequests.value.append(testCertificateRequest)

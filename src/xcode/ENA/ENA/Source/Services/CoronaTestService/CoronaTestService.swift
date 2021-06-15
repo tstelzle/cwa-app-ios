@@ -709,6 +709,7 @@ class CoronaTestService {
 								coronaTestType: coronaTestType,
 								registrationToken: registrationToken,
 								registrationDate: registrationDate,
+								labId: self.coronaTest(ofType: coronaTestType)?.labId,
 								retryExecutionIfCertificateIsPending: true
 							)
 
