@@ -177,6 +177,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CoronaWarnAppDelegate, Re
 		return true
 	}
 
+	/// get's called if the applications is running, coming to foreground and tries to open an URL
+	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+		let route = Route(url: url)
+		guard store.isOnboarded else {
+			postOnboardingRoute = route
+			return false
+		}
+		showHome(route)
+		return true
+	}
+
 	// MARK: - Protocol CoronaWarnAppDelegate
 
 	let client: HTTPClient
