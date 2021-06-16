@@ -52,6 +52,14 @@ final class HealthCertificatesCoordinator {
 			return UINavigationController(rootViewController: overviewScreen)
 		}
 	}()
+
+	func showHealthCertificate(_ healthCertifiedPerson: HealthCertifiedPerson, healthCertificate: HealthCertificate) {
+		showHealthCertificate(
+			healthCertifiedPerson: healthCertifiedPerson,
+			healthCertificate: healthCertificate,
+			shouldPushOnModalNavigationController: false
+		)
+	}
 	
 	// MARK: - Private
 	
@@ -218,7 +226,7 @@ final class HealthCertificatesCoordinator {
 		modalNavigationController = UINavigationController(rootViewController: healthCertificatePersonViewController)
 		viewController.present(modalNavigationController, animated: true)
 	}
-	
+
 	private func showHealthCertificate(
 		healthCertifiedPerson: HealthCertifiedPerson?,
 		healthCertificate: HealthCertificate,

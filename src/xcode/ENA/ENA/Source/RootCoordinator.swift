@@ -63,6 +63,8 @@ class RootCoordinator: RequiresAppDependencies {
 			// dispatch event route handling to showEvent
 			if case let .checkIn(guid) = route {
 				showEvent(guid)
+			} else if case let .certificate(base45) = route {
+				showCertificate(base45)
 			}
 		}
 
@@ -175,6 +177,24 @@ class RootCoordinator: RequiresAppDependencies {
 		tabBarController.dismiss(animated: false)
 		tabBarController.selectedIndex = index
 		checkInCoordinator?.showTraceLocationDetailsFromExternalCamera(guid)
+	}
+
+	func showCertificate(_ base45: String) {
+		guard let certificatesNavigationController = healthCertificatesCoordinator?.viewController,
+			  let index = tabBarController.viewControllers?.firstIndex(of: certificatesNavigationController) else {
+			Log.debug("Failed to find Healthcertificate navigation controller or tab index")
+			return
+		}
+		// let's register the certificate string we got to see if it's valid
+		let result = healthCertificateService.registerHealthCertificate(base45: base45)
+		switch result {
+		case let .success((healthCertifiedPerson, healthCertificate)):
+			tabBarController.dismiss(animated: false)
+			tabBarController.selectedIndex = index
+			healthCertificatesCoordinator?.showHealthCertificate(healthCertifiedPerson, healthCertificate: healthCertificate)
+		case .failure(_):
+			Log.error("Show certificate error")
+		}
 	}
 
 	func updateDetectionMode(
