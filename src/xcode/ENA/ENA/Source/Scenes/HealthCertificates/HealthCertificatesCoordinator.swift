@@ -163,6 +163,8 @@ final class HealthCertificatesCoordinator {
 		navigationController = UINavigationController(rootViewController: infoVC)
 		viewController.present(navigationController, animated: true)
 	}
+
+	private var qrCodeNavigationController: UINavigationController?
 	
 	private func showQRCodeScanner(from presentingViewController: UIViewController) {
 		let qrCodeScannerViewController = HealthCertificateQRCodeScannerViewController(
@@ -178,8 +180,12 @@ final class HealthCertificatesCoordinator {
 					}
 				}
 			},
-			dismiss: {
+			dismiss: { [weak self] in
 				presentingViewController.dismiss(animated: true)
+				self?.qrCodeNavigationController = nil
+			},
+			showCertificateError: { [weak self] error, faqAction, okAction in
+				self?.showCertificateError(error: error, faqAction: faqAction, okAction: okAction)
 			}
 		)
 
@@ -187,8 +193,8 @@ final class HealthCertificatesCoordinator {
 
 		let qrCodeNavigationController = UINavigationController(rootViewController: qrCodeScannerViewController)
 		qrCodeNavigationController.modalPresentationStyle = .fullScreen
-
 		presentingViewController.present(qrCodeNavigationController, animated: true)
+		self.qrCodeNavigationController = qrCodeNavigationController
 	}
 	
 	private func showHealthCertifiedPerson(
@@ -342,6 +348,27 @@ final class HealthCertificatesCoordinator {
 		)
 		alert.addAction(submitAction)
 		modalNavigationController.present(alert, animated: true)
+	}
+
+	func showCertificateError(
+		error: Error,
+		faqAction: UIAlertAction,
+		okAction: UIAlertAction) {
+
+		let errorMessage = error.localizedDescription + AppStrings.HealthCertificate.Error.faqDescription
+
+		let alert = UIAlertController(
+			title: AppStrings.HealthCertificate.Error.title,
+			message: errorMessage,
+			preferredStyle: .alert
+		)
+		alert.addAction(faqAction)
+		alert.addAction(okAction)
+
+		let presentingController = qrCodeNavigationController ?? viewController
+		DispatchQueue.main.async {
+			presentingController.present(alert, animated: true)
+		}
 	}
 
 	private func setupCertificateBadgeCount() {

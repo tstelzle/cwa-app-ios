@@ -12,10 +12,12 @@ class HealthCertificateQRCodeScannerViewController: UIViewController {
 	init(
 		healthCertificateService: HealthCertificateService,
 		didScanCertificate: @escaping (HealthCertifiedPerson, HealthCertificate) -> Void,
-		dismiss: @escaping () -> Void
+		dismiss: @escaping () -> Void,
+		showCertificateError: @escaping (_ error: Error, _ faqAction: UIAlertAction, _ okAction: UIAlertAction) -> Void
 	) {
 		self.didScanCertificate = didScanCertificate
 		self.dismiss = dismiss
+		self.showCertificateError = showCertificateError
 		
 		super.init(nibName: nil, bundle: nil)
 		
@@ -77,6 +79,7 @@ class HealthCertificateQRCodeScannerViewController: UIViewController {
 	private let focusView = QRScannerFocusView()
 	private let didScanCertificate: (HealthCertifiedPerson, HealthCertificate) -> Void
 	private let dismiss: () -> Void
+	private let showCertificateError: (_ error: Error, _ faqAction: UIAlertAction, _ okAction: UIAlertAction) -> Void
 
 	private var viewModel: HealthCertificateQRCodeScannerViewModel?
 	private var previewLayer: AVCaptureVideoPreviewLayer! { didSet { updatePreviewMask() } }
@@ -212,38 +215,24 @@ class HealthCertificateQRCodeScannerViewController: UIViewController {
 
 	private func showErrorAlert(error: Error) {
 		viewModel?.deactivateScanning()
-
-		let errorMessage = error.localizedDescription + AppStrings.HealthCertificate.Error.faqDescription
-
-		let alert = UIAlertController(
-			title: AppStrings.HealthCertificate.Error.title,
-			message: errorMessage,
-			preferredStyle: .alert
-		)
-		alert.addAction(
-			UIAlertAction(
-				title: AppStrings.HealthCertificate.Error.faqButtonTitle,
-				style: .default,
-				handler: { [weak self] _ in
-					if LinkHelper.open(urlString: AppStrings.Links.healthCertificateErrorFAQ) {
-						self?.viewModel?.activateScanning()
-					}
-				}
-			)
-		)
-		alert.addAction(
-			UIAlertAction(
-				title: AppStrings.Common.alertActionOk,
-				style: .default,
-				handler: { [weak self] _ in
+		let faqAction = UIAlertAction(
+			title: AppStrings.HealthCertificate.Error.faqButtonTitle,
+			style: .default,
+			handler: { [weak self] _ in
+				if LinkHelper.open(urlString: AppStrings.Links.healthCertificateErrorFAQ) {
 					self?.viewModel?.activateScanning()
 				}
-			)
+			}
 		)
 
-		DispatchQueue.main.async { [weak self] in
-			self?.present(alert, animated: true)
-		}
+		let okAction = UIAlertAction(
+			title: AppStrings.Common.alertActionOk,
+			style: .default,
+			handler: { [weak self] _ in
+				self?.viewModel?.activateScanning()
+			}
+		)
+		showCertificateError(error, faqAction, okAction)
 	}
 
 	private func showCameraPermissionErrorAlert(error: Error) {
