@@ -20,6 +20,17 @@ extension Route: Equatable {
 			return lhsUrlString == rhsUrlString
 		case (.checkIn, .rapidAntigen), (.rapidAntigen, .checkIn):
 			return false
+
+		case (let .certificate(lhsUrl), let .certificate(rhsUrl)):
+			return lhsUrl == rhsUrl
+		case (.certificate, .checkIn):
+			return false
+		case (.certificate, .rapidAntigen):
+			return false
+		case (.checkIn, .certificate):
+			return false
+		case (.rapidAntigen, .certificate):
+			return false
 		}
 	}
 }

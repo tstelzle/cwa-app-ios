@@ -457,6 +457,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CoronaWarnAppDelegate, Re
 	/// - Parameter launchOptions: Launch options passed on app launch
 	/// - Returns: A `Route` if a valid URL is passed in the launch options
 	private func routeFromLaunchOptions(_ launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Route? {
+		// first we lookup if an URL was found
+		if let url = launchOptions?[.url] as? URL {
+			return Route(url: url)
+		}
+
 		guard let activityDictionary = launchOptions?[.userActivityDictionary] as? [AnyHashable: Any] else {
 			return nil
 		}

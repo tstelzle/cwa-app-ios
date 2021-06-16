@@ -15,9 +15,16 @@ enum Route {
 		}
 		self.init(url: url)
 	}
+
 	// swiftlint:disable:next cyclomatic_complexity
 	init?(url: URL) {
 		let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+		if components?.scheme?.uppercased() == "HC1",
+		   let certificateString = components?.url?.absoluteString.removingPercentEncoding {
+			self = .certificate(certificateString)
+			return
+		}
+
 		guard let host = components?.host?.lowercased() else {
 			return nil
 		}
@@ -88,5 +95,6 @@ enum Route {
 
 	case checkIn(String)
 	case rapidAntigen(Result<CoronaTestRegistrationInformation, QRCodeError>)
+	case certificate(String)
 
 }
