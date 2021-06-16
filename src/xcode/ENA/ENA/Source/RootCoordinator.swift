@@ -182,18 +182,35 @@ class RootCoordinator: RequiresAppDependencies {
 	func showCertificate(_ base45: String) {
 		guard let certificatesNavigationController = healthCertificatesCoordinator?.viewController,
 			  let index = tabBarController.viewControllers?.firstIndex(of: certificatesNavigationController) else {
-			Log.debug("Failed to find Healthcertificate navigation controller or tab index")
+			Log.debug("Failed to find certificatesNavigationController navigation controller or index of it")
 			return
-		}
+ 		}
 		// let's register the certificate string we got to see if it's valid
-		let result = healthCertificateService.registerHealthCertificate(base45: base45)
-		switch result {
+		switch healthCertificateService.registerHealthCertificate(base45: base45) {
 		case let .success((healthCertifiedPerson, healthCertificate)):
 			tabBarController.dismiss(animated: false)
 			tabBarController.selectedIndex = index
 			healthCertificatesCoordinator?.showHealthCertificate(healthCertifiedPerson, healthCertificate: healthCertificate)
-		case .failure(_):
-			Log.error("Show certificate error")
+		case let .failure(error):
+			Log.error("tried to open app with certificate, but result was an error \(error)")
+			let faqAction = UIAlertAction(
+				title: AppStrings.HealthCertificate.Error.faqButtonTitle,
+				style: .default,
+				handler: { _ in
+					LinkHelper.open(urlString: AppStrings.Links.healthCertificateErrorFAQ)
+				}
+			)
+
+			let okAction = UIAlertAction(
+				title: AppStrings.Common.alertActionOk,
+				style: .default,
+				handler: nil
+			)
+			healthCertificatesCoordinator?.showCertificateError(
+				error: error,
+				faqAction: faqAction,
+				okAction: okAction
+			)
 		}
 	}
 
