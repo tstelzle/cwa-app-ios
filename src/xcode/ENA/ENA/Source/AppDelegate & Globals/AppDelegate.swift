@@ -131,6 +131,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CoronaWarnAppDelegate, Re
 
 		NotificationCenter.default.addObserver(self, selector: #selector(isOnboardedDidChange(_:)), name: .isOnboardedDidChange, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(backgroundRefreshStatusDidChange), name: UIApplication.backgroundRefreshStatusDidChangeNotification, object: nil)
+
+		// if the route is from type certificate we need to return false to avoid
+		// application open url get called
+		
+		if case .certificate = route {
+			return false
+		}
 		return handleQuickActions(with: launchOptions)
 	}
 
