@@ -16,12 +16,18 @@ enum Route {
 		self.init(url: url)
 	}
 
+
+	// if we find a HC1 scheme this might be wrong escaped by the system
+	// to make sure it matches the base45 requirements we need to re percent
+	// escape character that are not allowed in Base45
+	//
 	// swiftlint:disable:next cyclomatic_complexity
 	init?(url: URL) {
 		let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
 		if components?.scheme?.uppercased() == "HC1",
-		   let certificateString = components?.url?.absoluteString.removingPercentEncoding {
-			self = .certificate(certificateString)
+		   let certificateString = components?.url?.absoluteString.removingPercentEncoding ?? components?.url?.absoluteString,
+		   let repairedString = certificateString.addingPercentEncoding(withAllowedCharacters: CharacterSet(charactersIn: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:")) {
+			self = .certificate(repairedString)
 			return
 		}
 
