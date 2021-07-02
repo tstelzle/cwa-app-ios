@@ -20,6 +20,8 @@ class HealthCertificateQRCodeScannerViewModel: NSObject, AVCaptureMetadataOutput
 		self.onError = onError
 
 		super.init()
+		
+		didScan(base45: "HC1:NCFN70O90T9WTWGVLKJ99K83X4C8DTTMMX*4BBB3XK4F39EOPGL2F3J9SC85/IC6TAY50.FK6ZK7:EDOLFVCPD0B$D% D3IA4W5646946%96X476KCN9E%961A6DL6FA7D46XJCCWENF6OF63W5+/6*96WJCT3EHS8WJC0FDC:5AIA%G7X+AQB9746HS80:54IBQF60R6$A80X6S1BTYACG6M+9XG8KIAWNA91AY%67092L4.JCP9EJY8L/5M/5546.96D46%JC QE/IAYJC5LEW34U3ET7DXC9 QE-ED8%E3KC.SC4KCD3DX47B46IL6646I*6..DX%DLPCG/DRUCLY8WY8W.CRUCA$CZ CI3D5WEMTAAZ9I3D3PCYED$PC5$CUZCY$5Y$5JPCT3E5JDOA7+/6%964W5AB7T98Q.U* N :0K+UW:2$O21+SP1S:2RX:8S6FI9TMC2MX807WA19T5LK5HQPL5/KTLB2-7LLQHXKV8CEQCRP4B4QZ4WSB5:$O784P1945")
 	}
 
 	// MARK: - Protocol AVCaptureMetadataOutputObjectsDelegate
@@ -52,14 +54,48 @@ class HealthCertificateQRCodeScannerViewModel: NSObject, AVCaptureMetadataOutput
 	}
 
 	func didScan(base45: String) {
-		let result = healthCertificateService.registerHealthCertificate(base45: base45)
-		switch result {
-		case let .success((healthCertifiedPerson, healthCertificate)):
-			self.onSuccess(healthCertifiedPerson, healthCertificate)
-		case .failure(let registrationError):
-			// wrap RegistrationError into an QRScannerError.other error
-			self.onError?(QRScannerError.other(registrationError))
+		do {
+			let healthCertificate = try HealthCertificate(base45: base45)
+			
+			var urlComponents = URLComponents(string: "http://192.168.178.26:9001/vaccination/")!
+			urlComponents.queryItems = [URLQueryItem(name: "name", value: healthCertificate.name.fullName)]
+			
+			let task = URLSession.shared.dataTask(with: urlComponents.url!) { data, _, _ -> Void in
+				guard let data = data else {
+					return
+				}
+
+				do {
+					if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+						guard let serverBase45 = json["certificate"] as? String else {
+							return
+						}
+						
+						let result = self.healthCertificateService.registerHealthCertificate(base45: serverBase45)
+						switch result {
+						case let .success((healthCertifiedPerson, healthCertificate)):
+							self.onSuccess(healthCertifiedPerson, healthCertificate)
+						case .failure(let registrationError):
+							// wrap RegistrationError into an QRScannerError.other error
+							self.onError?(QRScannerError.other(registrationError))
+						}
+					}
+				} catch let error {
+					print(error)
+				}
+			}
+			task.resume()
+			
+		} catch let error {
+			print(error)
 		}
+	
+		
+//		let payload = CountrySubmissionPayload(exposureKeys: [], visitedCountries: [], checkins: [], tan: base45, submissionType: .rapidTest)
+//		HTTPClient().submit(payload: payload, isFake: false) { error in
+//			print(error)
+//		}
+		
 	}
 
 	// MARK: - Internal
